@@ -6,7 +6,7 @@ ui <- dashboardPage(
   dashboardSidebar( sidebarMenu(
     menuItem("Home", tabName = "home", icon = icon("home")),
     menuItem("Data", tabName = "data", icon = icon("database")),
-    menuItem("Auction", tabName = "auction", icon = icon("line-chart")),
+    menuItem("Auctions", tabName = "auction", icon = icon("line-chart")),
     menuItem("Participants", tabName = "part", icon = icon("users"))
   )),
   
@@ -46,11 +46,13 @@ ui <- dashboardPage(
                 fluidRow(
                   box(
                     width = 12,
-                    plotOutput("auctions")),
+                    plotOutput("auctions"),
+                    DT::dataTableOutput('desc')
+                  )
                 )
                 
       ),tabItem(tabName = "part"
-               
+                
       )
     )
   )
