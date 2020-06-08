@@ -7,7 +7,8 @@ ui <- dashboardPage(
     menuItem("Home", tabName = "home", icon = icon("home")),
     menuItem("Data", tabName = "data", icon = icon("database")),
     menuItem("Auctions", tabName = "auction", icon = icon("line-chart")),
-    menuItem("Participants", tabName = "part", icon = icon("users"))
+    menuItem("Participants", tabName = "part", icon = icon("users")),
+    menuItem("Task List", tabName = "authors", icon = icon("share-alt"))
   )),
   
   dashboardBody(
@@ -34,10 +35,27 @@ ui <- dashboardPage(
       ),tabItem(tabName = "auction",
                 fluidRow(
                   box(
-                    selectizeInput('auction', 'Auction ID', 
-                                   choices = na.omit(unique(offersInTime$Auction_ID))
+                    width = 3,
+                    selectizeInput('type', 'Type', 
+                                   choices = na.omit(unique(allData$Type))
                     )),
                   box(
+                    width = 3,
+                    selectizeInput('clarification', 'Type Clarification', 
+                                   choices = c("") #observed na.omit(unique(allData$Type_Clarification))
+                    )),
+                  box(
+                    width = 3,
+                    selectizeInput('evaluation', 'Evaluation', 
+                                   choices = c("") #observed #na.omit(unique(allData$EvaluatedBy))
+                    )),
+                  box(
+                    width = 3,
+                    selectizeInput('auction', 'Auction ID', 
+                                   choices = c("") #observed #na.omit(unique(offersInTime$Auction_ID))
+                    )),
+                  box(
+                    width = 3,
                     selectizeInput('item', 'Item ID', 
                                    choices = c("") #observed
                     ))
@@ -53,7 +71,8 @@ ui <- dashboardPage(
                 
       ),tabItem(tabName = "part"
                 
-      )
+      ),tabItem(tabName = "authors",
+                tableOutput('authors'))
     )
   )
 )

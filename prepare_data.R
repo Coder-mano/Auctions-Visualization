@@ -1,16 +1,25 @@
+# Data preparation
 
 prepareAllData <- function(allData) {
   
-  names(offersInTime)[names(offersInTime) == 'Klient'] <- 'Client'
+  names(allData)[names(allData) == 'Klient'] <- 'Client'
   names(allData)[names(allData) == '_auctionData_vzorova_string'] <- 'auctionData_pattern'
   names(allData)[names(allData) == 'ID aukcie'] <- 'Auction_ID'
-  names(allData)[names(allData) == '_eAuctionEvaulatedBy_string'] <- 'EvaulatedBy'
+  names(allData)[names(allData) == '_eAuctionEvaulatedBy_string'] <- 'Evaluated_By'
+  names(allData)[names(allData) == '_auctionData_typ_string'] <- 'Type'
+  names(allData)[names(allData) == '_auctionData_typ_upresneni_string'] <- 'Type_Clarification'
   
-  allData$KlientSuffix <- sub(".*-","",allData$Klient)
-  allData$Klient <- sub("\\-.*","",allData$Klient)
+  # Missing values replacement
+  allData[['Type_Clarification']][allData[['Type_Clarification']]==''] <- 'Undefined'
   
+  # Client ID trimming
+  allData$ClientSuffix <- sub(".*-","",allData$Client)
+  allData$Client <- sub("\\-.*","",allData$Client)
+  
+  # Example auctiions filtering
   allData = filter(allData,auctionData_pattern == 0)
   allData$auctionData_pattern <- NULL
+  
   return(allData)
 }
 
