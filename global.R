@@ -5,7 +5,6 @@ library(dplyr)
 library(DT)
 library(readxl)
 source("prepare_data.R")
-#source("auctions.R")
 
 # Load data
 allData = read.csv('./data/HI_ALL.csv', stringsAsFactors = F, sep = ";",check.names = F)

@@ -16,7 +16,7 @@ prepareAllData <- function(allData) {
   allData$ClientSuffix <- sub(".*-","",allData$Client)
   allData$Client <- sub("\\-.*","",allData$Client)
   
-  # Example auctiions filtering
+  # Example auctions filtering
   allData = filter(allData,auctionData_pattern == 0)
   allData$auctionData_pattern <- NULL
   

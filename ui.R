@@ -1,5 +1,4 @@
-
-library(shiny)
+source("auctions.R")
 
 ui <- dashboardPage(
   dashboardHeader(title = "Assignment"),
@@ -30,50 +29,16 @@ ui <- dashboardPage(
                                     status = 'warning'))
                                 
                      ),tabPanel('FuturePanel')
-                     
-              )
-      ),tabItem(tabName = "auction",
-                fluidRow(
-                  box(
-                    width = 3,
-                    selectizeInput('type', 'Type', 
-                                   choices = na.omit(unique(allData$Type))
-                    )),
-                  box(
-                    width = 3,
-                    selectizeInput('clarification', 'Type Clarification', 
-                                   choices = c("") #observed na.omit(unique(allData$Type_Clarification))
-                    )),
-                  box(
-                    width = 3,
-                    selectizeInput('evaluation', 'Evaluation', 
-                                   choices = c("") #observed #na.omit(unique(allData$EvaluatedBy))
-                    )),
-                  box(
-                    width = 3,
-                    selectizeInput('auction', 'Auction ID', 
-                                   choices = c("") #observed #na.omit(unique(offersInTime$Auction_ID))
-                    )),
-                  box(
-                    width = 3,
-                    selectizeInput('item', 'Item ID', 
-                                   choices = c("") #observed
-                    ))
-                ),
-                
-                fluidRow(
-                  box(
-                    width = 12,
-                    plotOutput("auctions"),
-                    DT::dataTableOutput('desc')
-                  )
-                )
-                
-      ),tabItem(tabName = "part"
-                
-      ),tabItem(tabName = "authors",
-                tableOutput('authors'))
+              )),
+      
+      auctions,
+      
+      tabItem(tabName = "part"),
+      
+      tabItem(tabName = "authors",
+              tableOutput('authors'))
     )
   )
 )
+
 
