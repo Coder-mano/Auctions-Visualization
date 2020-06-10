@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1591797855356.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3293102460",
+    "id" : "FC80B982",
+    "lastKnownWriteTime" : 1591797833,
+    "last_content_update" : 1591797833,
+    "path" : "~/Škola/Ing/4. ročník/LS/Elektronické obchodovanie/eo/prepare_data.R",
+    "project_path" : "prepare_data.R",
+    "properties" : {
+        "cursorPosition" : "8,71",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
