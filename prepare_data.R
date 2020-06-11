@@ -33,11 +33,22 @@ prepareOffersInTime <- function(offersInTime) {
   names(offersInTime)[names(offersInTime) == 'cas'] <- 'Date'
   names(offersInTime)[names(offersInTime) == 'ID ucastnika'] <- 'Participant_ID'
   
+
+  
   # toFactor
   offersInTime$Participant_ID <- as.factor(offersInTime$Participant_ID)
   #offersInTime$New_BID <- strtoi(offersInTime$New_BID)
   offersInTime$Date = as.POSIXct(offersInTime$Date, format= " %d.%m.%y %H:%M")
   
   return(offersInTime) 
+}
+
+prepareItems = function(items){
+  names(items)[names(items) == 'ID aukcie'] <- 'Auction_ID1'
+  names(items)[names(items) == 'ID itemu'] <- 'Item_ID1'
+  names(items)[names(items) == '_mnozstvi_string'] <- 'Mnozstvo'
+  library(dplyr)
+  items=select(items, Klient, Auction_ID1, Item_ID1, Mnozstvo)
+  return(items)
 }
 
