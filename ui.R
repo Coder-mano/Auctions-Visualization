@@ -7,6 +7,7 @@ ui <- dashboardPage(
     menuItem("Data", tabName = "data", icon = icon("database")),
     menuItem("Auctions", tabName = "auction", icon = icon("line-chart")),
     menuItem("Bid progress", tabName = "bids", icon = icon("money")),
+    menuItem("Items", tabName = "items", icon = icon("bong")),
     menuItem("Participants", tabName = "part", icon = icon("users")),
     menuItem("Task List", tabName = "authors", icon = icon("share-alt"))
   )),
@@ -29,7 +30,13 @@ ui <- dashboardPage(
                                     width = 12, solidHeader = T,
                                     status = 'warning'))
                                 
-                     ),tabPanel('FuturePanel')
+                     ),tabPanel('items.csv',
+                                fluidRow(
+                                  box(
+                                    DT::dataTableOutput('items'),
+                                    width = 12, solidHeader = T,
+                                    status = 'warning'))
+                     ),tabPanel("futuretab")
               )),
       
       auctions,
@@ -50,6 +57,23 @@ ui <- dashboardPage(
                 )
               )
               ),
+      tabItem(tabName = "items",
+              fluidRow(
+                box(
+                  width = 3,
+                  selectizeInput('klient', 'Klient',
+                                 choices = unique(items$Klient))
+                )
+              ),
+              
+              fluidRow(
+                box(
+                  width = 12,
+                  plotOutput("items_plot"),
+                  dataTableOutput("items_table")
+                )
+              )
+      ),
       
       tabItem(tabName = "part"),
       
@@ -58,5 +82,3 @@ ui <- dashboardPage(
     )
   )
 )
-
-
