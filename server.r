@@ -9,6 +9,9 @@ server <- function(input, output, session) {
   output$offersintime = DT::renderDataTable({
     datatable(offersInTime, rownames = F,options = list(scrollX = TRUE))
   })
+  output$items = DT::renderDataTable({
+    datatable(items, rownames = F,options = list(scrollX = TRUE))
+  })
   
   # Auctions
   observeEvent(input$type,{
@@ -38,6 +41,14 @@ server <- function(input, output, session) {
     subData2 = filter(subData2, Auction_ID == input$A_ID)
     subData2$New_BID = as.integer(subData2$New_BID)
     datatable(subData2, rownames = F,options = list(scrollX = TRUE))
+  })
+  # Items
+  output$items_plot = renderPlot({
+    data3 = filter(items, Klient == input$klient)
+  })
+  output$items_table <- renderDataTable({
+    data3 = filter(items, Klient == input$klient)
+    datatable(data3)
   })
   
   # Authors
