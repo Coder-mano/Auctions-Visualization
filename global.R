@@ -9,11 +9,13 @@ source("prepare_data.R")
 # Load data
 allData = read.csv('./data/HI_ALL.csv', stringsAsFactors = F, sep = ";",check.names = F)
 offersInTime = read.csv('./data/Offersintime.csv', stringsAsFactors = F, sep = ";",check.names = F)
+items=read.csv('./data/Items.csv', stringsAsFactors = F, sep = ";",check.names = F)
 
 
 # Prepare data
 allData = prepareAllData(allData)
 offersInTime = prepareOffersInTime(offersInTime)
+items=prepareItems(items)
 
 # ?? without effect -_-
 offersInTime = offersInTime[offersInTime$Auction_ID %in% allData$Auction_ID,]
