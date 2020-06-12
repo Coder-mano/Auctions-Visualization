@@ -14,6 +14,27 @@ ui <- dashboardPage(
   
   dashboardBody(
     tabItems(
+      tabItem(tabName = 'home', titlePanel("Dashboard"),
+              fluidRow(
+               box(width = 3,title = "Overview", solidHeader = T, status = "primary",
+                   print("Number of auctions"),
+                   titlePanel(length(unique(offersInTime$Auction_ID))),
+                   print("Items in auctions"),
+                   titlePanel(length(unique(offersInTime$Item_ID)))
+               )
+              ),
+              fluidRow(
+                box(width = 3, status = "primary",
+                    plotOutput("Auction_type")
+                ),
+                box(width = 3, status = "primary",
+                    plotOutput("Accessibility")
+                ),
+                box(width = 3, status = "primary",
+                    plotOutput("Currency")
+                )
+              )
+      ),
       tabItem(tabName = 'data',
               tabBox(title = tagList(shiny::icon("database"), "Data"), width = 15,
                      tabPanel('HI_ALL.csv',

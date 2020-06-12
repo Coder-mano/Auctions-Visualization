@@ -2,6 +2,23 @@
 
 server <- function(input, output, session) {
   
+  #Home
+  output$Auction_type = renderPlot({
+    types = as.factor(allData$Type)
+    types = droplevels(types, exclude = c("","0"))
+    types = na.omit(types)
+    pie(table(types), col = rainbow(2), main = "Auction types", labels = c("Buy", "Sell"))
+  })
+  output$Accessibility = renderPlot({
+    pie(table(allData$`_auctionData_verejna_string`), col = rainbow(2), main = "Auction Accessibility", labels = c("Private","Public"))
+  })
+  
+  output$Currency = renderPlot({
+    currency = as.factor(allData$`_auctionData_mena_string`)
+    currency = droplevels(currency, exclude = c("ks", "THB", "0", "GBP", "%", "AUD", "I", "RUB", "<NA>"))
+    pie(table(currency), col = rainbow(7), main = "Most Used Currency")
+  })
+  
   # Data
   output$allData = DT::renderDataTable({
     datatable(allData, rownames = F,options = list(scrollX = TRUE))
