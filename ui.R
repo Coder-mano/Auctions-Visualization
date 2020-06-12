@@ -46,6 +46,11 @@ ui <- dashboardPage(
                   width = 3,
                   selectizeInput('A_ID', 'Auction ID',
                                  choices = unique(offersInTime$Auction_ID))
+                ),
+                box(
+                  width = 3,
+                  selectizeInput('I_ID', 'Item ID',
+                                 choices = unique(offersInTime$Item_ID))
                 )
               ),
                 

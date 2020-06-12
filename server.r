@@ -32,6 +32,7 @@ server <- function(input, output, session) {
   output$bids_plot <- renderPlot({
     subData2 = filter(offersInTime, Client == 100)
     subData2 = filter(subData2, Auction_ID == input$A_ID)
+    subData2 = filter(subData2, Item_ID == input$I_ID)
     subData2$New_BID = as.integer(subData2$New_BID)
     ggplot(data = subData2, aes(x = subData2$Change_order, y = subData2$New_BID, colour = "red")) + geom_line() + theme_bw() + geom_point() + xlab("Number of bid") + ylab("Bid ammount") + theme(legend.position = "none")
   })
@@ -39,6 +40,7 @@ server <- function(input, output, session) {
   output$bids_table <- renderDataTable({
     subData2 = filter(offersInTime, Client == 100)
     subData2 = filter(subData2, Auction_ID == input$A_ID)
+    subData2 = filter(subData2, Item_ID == input$I_ID)
     subData2$New_BID = as.integer(subData2$New_BID)
     datatable(subData2, rownames = F,options = list(scrollX = TRUE))
   })
