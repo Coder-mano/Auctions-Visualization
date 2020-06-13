@@ -32,6 +32,9 @@ ui <- dashboardPage(
                 ),
                 box(width = 3, status = "primary",
                     plotOutput("Currency")
+                ),
+                box(width = 3, status = "primary",
+                    plotOutput("Evaluation")
                 )
               )
       ),

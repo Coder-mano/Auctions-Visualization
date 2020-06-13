@@ -18,6 +18,14 @@ server <- function(input, output, session) {
     currency = droplevels(currency, exclude = c("ks", "THB", "0", "GBP", "%", "AUD", "I", "RUB", "<NA>"))
     pie(table(currency), col = rainbow(7), main = "Most Used Currency")
   })
+  output$Evaluation = renderPlot({
+    evaluation_type = as.factor(allData$Evaluated_By)
+    evaluation_type = droplevels(evaluation_type, exclude = c("", "2722195"))
+    evaluation_type = na.omit(evaluation_type)
+    pie(table(evaluation_type), col = rainbow(7), main = "Auction Evaluation by",labels = "")
+    legend("bottomleft", legend = c("Pomocní výpočet - max", "Pomocní výpočet - min", "Celková nabítka účastníka", "Hodnocení", "Jednotlivé položky", "Multikriteriální hodnocení", "Skupiny položek" ),bty="n", fill = rainbow(7))
+    
+  })
   
   # Data
   output$allData = DT::renderDataTable({
