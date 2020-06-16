@@ -92,6 +92,11 @@ ui <- dashboardPage(
                   width = 3,
                   selectizeInput('klient', 'Klient',
                                  choices = unique(items$Klient))
+                ),
+                box(
+                  width = 3,
+                  selectizeInput('aukcia', 'ID aukcie',
+                                 choices = unique(items$Auction_ID1))
                 )
               ),
               
@@ -99,6 +104,7 @@ ui <- dashboardPage(
                 box(
                   width = 12,
                   plotOutput("items_plot"),
+                  plotOutput("items_plot1"),
                   dataTableOutput("items_table")
                 )
               )
