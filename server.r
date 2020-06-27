@@ -23,7 +23,7 @@ server <- function(input, output, session) {
     evaluation_type = droplevels(evaluation_type, exclude = c("", "2722195"))
     evaluation_type = na.omit(evaluation_type)
     pie(table(evaluation_type), col = rainbow(7), main = "Auction Evaluation by",labels = "")
-    legend("bottomleft", legend = c("PomocnĂ­ vĂ˝poÄŤet - max", "PomocnĂ­ vĂ˝poÄŤet - min", "CelkovĂˇ nabĂ­tka ĂşÄŤastnĂ­ka", "HodnocenĂ­", "JednotlivĂ© poloĹľky", "MultikriteriĂˇlnĂ­ hodnocenĂ­", "Skupiny poloĹľek" ),bty="n", fill = rainbow(7))
+    #legend("bottomleft", legend = c("PomocnĂ� vĂ˝poÄŤet - max", "PomocnĂ� vĂ˝poÄŤet - min", "CelkovĂˇ nabĂ�tka ĂşÄŤastnĂ�ka", "HodnocenĂ�", "JednotlivĂ© poloĹľky", "MultikriteriĂˇlnĂ� hodnocenĂ�", "Skupiny poloĹľek" ),bty="n", fill = rainbow(7))
     
   })
   
@@ -54,23 +54,22 @@ server <- function(input, output, session) {
   })
   
   #Bids progress 
-  output$bids_plot <- renderPlot({
-    subData2 = filter(offersInTime, Client == 100)
-    subData2 = filter(subData2, Auction_ID == input$A_ID)
-    subData2 = filter(subData2, Item_ID == input$I_ID)
-    subData2$New_BID = as.integer(subData2$New_BID)
-    ggplot(data = subData2, aes(x = subData2$Change_order, y = subData2$New_BID, colour = "red")) + geom_line() + theme_bw() + geom_point() + xlab("Number of bid") + ylab("Bid ammount") + theme(legend.position = "none")
+  observeEvent(input$bidType,{
+    bidTypeObserver(input,session)
+  })
+  observeEvent(input$bidClarification,{ 
+    bidClarificationObserver(input,session)
+  })
+  observeEvent(input$bidEvaluation,{ 
+    bidEvaluationObserver(input,session)
   })
   
-  output$bids_table <- renderDataTable({
-    subData2 = filter(offersInTime, Client == 100)
-    subData2 = filter(subData2, Auction_ID == input$A_ID)
-    subData2 = filter(subData2, Item_ID == input$I_ID)
-    subData2$New_BID = as.integer(subData2$New_BID)
-    datatable(subData2, rownames = F,options = list(scrollX = TRUE))
+  observeEvent(input$bidAuction,{ 
+    output$bidAuctions <- bidRenderAuctionPlot(input,output,session)
   })
+  
+  
   # Items ---------------
-  library(tidyverse)
   output$items_plot = renderPlot({
     data3 = filter(items, Klient == input$klient)
     data3=filter(data3,Auction_ID1 == input$aukcia)
@@ -79,7 +78,7 @@ server <- function(input, output, session) {
     ggplot(data3, aes(x=data3$Item_ID1, y=data3$Past_Price)) + xlab("Item ID")+ ylab("Past price") +
       geom_segment( aes(x=data3$Item_ID1, xend=data3$Item_ID1, y=0, yend=data3$Past_Price)) +
       geom_point( size=4, color="red", fill=alpha("orange", 0.3), alpha=0.7, shape=21, stroke=2)
-  
+    
     
   })
   output$items_plot1 = renderPlot({
@@ -103,6 +102,9 @@ server <- function(input, output, session) {
     read_excel(paste('tasks', ".xlsx", sep=""), 1)
   })
 }
+
+
+
 
 
 

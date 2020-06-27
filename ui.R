@@ -1,3 +1,4 @@
+source("bidProgress.R")
 source("auctions.R")
 
 ui <- dashboardPage(
@@ -64,28 +65,7 @@ ui <- dashboardPage(
               )),
       
       auctions,
-      tabItem(tabName = "bids",
-              fluidRow(
-                box(
-                  width = 3,
-                  selectizeInput('A_ID', 'Auction ID',
-                                 choices = unique(offersInTime$Auction_ID))
-                ),
-                box(
-                  width = 3,
-                  selectizeInput('I_ID', 'Item ID',
-                                 choices = unique(offersInTime$Item_ID))
-                )
-              ),
-                
-              fluidRow(
-                box(
-                  width = 12,
-                  plotOutput("bids_plot"),
-                  dataTableOutput("bids_table")
-                )
-              )
-              ),
+      bidProgress,
       tabItem(tabName = "items",
               fluidRow(
                 box(

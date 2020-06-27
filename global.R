@@ -4,6 +4,7 @@ library(ggplot2)
 library(dplyr)
 library(DT)
 library(readxl)
+library(tidyverse)
 source("prepare_data.R")
 
 # Load data
