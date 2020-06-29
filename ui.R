@@ -6,6 +6,7 @@ ui <- dashboardPage(
   dashboardSidebar( sidebarMenu(
     menuItem("Home", tabName = "home", icon = icon("home")),
     menuItem("Data", tabName = "data", icon = icon("database")),
+    menuItem("Overview", tabName = "m_overview", icon = icon("line-chart")),
     menuItem("Auctions", tabName = "auction", icon = icon("line-chart")),
     menuItem("Bid progress", tabName = "bids", icon = icon("money")),
     menuItem("Items", tabName = "items", icon = icon("bong")),
@@ -91,6 +92,25 @@ ui <- dashboardPage(
       ),
       
       tabItem(tabName = "part"),
+      
+      tabItem(tabName = "m_overview",
+              fluidRow(
+                box(
+                  width = 2,
+                  selectizeInput('m_klient', 'Choose client:',
+                                 choices = unique(items$Klient))
+                )),
+              valueBoxOutput("num_auctions", width = 4),#pocet zucastnenych akcii
+              valueBoxOutput("num_items", width = 4),#pocet nakupenych itemov
+              valueBoxOutput("money_talks", width = 4),#kolko dokopy minul
+              tags$br(), 
+              
+             # fluidRow(tags$div(HTML("<br><br><br><br><br><br><b>-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</b>")),
+             fluidRow(box(width = 2, selectInput("top_x", "Choose a number for Top X charts:", seq(3, 15, by=1)))),
+             fluidRow(box(width = 6,plotOutput("topten_money", width = "90%")),
+                      box(width = 6,plotOutput("topten_quantity", width = "90%"))
+                    )
+      ),
       
       tabItem(tabName = "authors",
               tableOutput('authors'))
