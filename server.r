@@ -148,8 +148,8 @@ server <- function(input, output, session) {
     user_input = as.integer(input$top_x)
     dt3 = dt2[1:user_input,]
     dotchart(dt3$sumamount, labels = dt3$Klient,
-             cex = 0.6, ylab = "client_id", xlab = "money spend",
-             main=paste0("Top ", user_input, " clients, who spent most at acions"),
+             cex = 0.6, ylab = "client_id", xlab = "money spent",
+             main=paste0("Top ", user_input, " clients, who spent most at auctions"),
              width = 4)
     
   })
