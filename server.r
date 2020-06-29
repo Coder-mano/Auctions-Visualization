@@ -23,8 +23,6 @@ server <- function(input, output, session) {
     evaluation_type = droplevels(evaluation_type, exclude = c("", "2722195"))
     evaluation_type = na.omit(evaluation_type)
     pie(table(evaluation_type), col = rainbow(7), main = "Auction Evaluation by",labels = "")
-    #legend("bottomleft", legend = c("PomocnĂ� vĂ˝poÄŤet - max", "PomocnĂ� vĂ˝poÄŤet - min", "CelkovĂˇ nabĂ�tka ĂşÄŤastnĂ�ka", "HodnocenĂ�", "JednotlivĂ© poloĹľky", "MultikriteriĂˇlnĂ� hodnocenĂ�", "Skupiny poloĹľek" ),bty="n", fill = rainbow(7))
-    
   })
   
   # Data
@@ -97,15 +95,67 @@ server <- function(input, output, session) {
     datatable(data3)
   })
   
+  # Overview ---------------
+  output$num_auctions <- renderValueBox({
+    my_data = subset(items, Klient == input$m_klient)
+    sum_auctions = length(unique(my_data$Auction_ID1))
+    infoBox(
+      "Auctions", paste0(sum_auctions), icon = icon("store"),
+      color = "purple"
+    )
+  })
+  
+  output$num_items <- renderValueBox({
+    my_data = subset(items, Klient == input$m_klient)
+    sum_item = sum(as.numeric(my_data$Quantity), na.rm = TRUE)
+    infoBox(
+      "Purchased items", paste0(sum_item), icon = icon("shopping-basket"),
+      color = "yellow"
+    )
+  })
+  
+  output$money_talks <- renderValueBox({
+    my_data = subset(items, Klient == input$m_klient)
+    sum_money = sum(as.numeric(my_data$Past_Price), na.rm = TRUE)
+    infoBox(
+      "Money spent", paste0(sum_money), icon = icon("euro-sign"),
+      color = "green"
+    )
+  })
+  
+  output$topten_quantity <- renderPlot({
+    items2 = items[c(3,4)]
+    items2 = items2 %>% mutate(Past_Price = coalesce(Past_Price, 0))
+    items2 = items2[with(items2, order(-Past_Price)), ]
+    
+    user_input = as.integer(input$top_x)
+    dt3 = items2[1:user_input,]
+    dotchart(dt3$Past_Price, labels = dt3$Item_ID1,
+             cex = 0.6, ylab = "item_id", xlab = "value",
+             main=paste0("Top ", user_input, " items, with highest value"),
+             width = 4)
+    
+  })
+  
+  output$topten_money <- renderPlot({
+    items2 = items[c(1,4)]
+    items2 = items2 %>% mutate(Past_Price = coalesce(Past_Price, 0))
+    library(data.table)
+    dt <- data.table(items2)
+    dt2 <- dt[,list(sumamount = sum(Past_Price)), by = c("Klient")]
+    dt2 = dt2[with(dt2, order(-sumamount)), ]
+    
+    user_input = as.integer(input$top_x)
+    dt3 = dt2[1:user_input,]
+    dotchart(dt3$sumamount, labels = dt3$Klient,
+             cex = 0.6, ylab = "client_id", xlab = "money spend",
+             main=paste0("Top ", user_input, " clients, who spent most at acions"),
+             width = 4)
+    
+  })
+  
   # Authors
   output$authors <- renderTable({
     read_excel(paste('tasks', ".xlsx", sep=""), 1)
   })
 }
-
-
-
-
-
-
-
