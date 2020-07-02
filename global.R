@@ -6,6 +6,7 @@ library(DT)
 library(readxl)
 library(tidyverse)
 library(leaflet)
+library(shinyWidgets)
 
 source("prepare_data.R")
 
