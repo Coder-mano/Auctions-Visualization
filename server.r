@@ -81,30 +81,31 @@ server <- function(input, output, session) {
   
   
   # Items ---------------
-  output$items_plot = renderPlot({
-    data3 = filter(items, Klient == input$klient)
-    data3=filter(data3,Auction_ID1 == input$aukcia)
+  # output$items_plot = renderPlot({
+  # data3 = filter(items, Klient == input$klient)
+  # data3=filter(data3,Auction_ID1 == input$aukcia)
     #data3=filter(data3,Past_Price == input$aukcia )
-    data3$Past_Price = as.integer(data3$Past_Price)
-    ggplot(data3, aes(x=data3$Item_ID1, y=data3$Past_Price)) + xlab("Item ID")+ ylab("Past price") +
-      geom_segment( aes(x=data3$Item_ID1, xend=data3$Item_ID1, y=0, yend=data3$Past_Price)) +
-      geom_point( size=4, color="red", fill=alpha("orange", 0.3), alpha=0.7, shape=21, stroke=2)
+  #  data3$Past_Price = as.integer(data3$Past_Price)
+  #  ggplot(data3, aes(x=data3$Auction_ID1, y=data3$Past_Price)) + xlab("Item ID")+ ylab("Past price") +
+  #  geom_segment( aes(x=data3$Auction_ID1, xend=data3$Auction_ID1, y=0, yend=data3$Past_Price)) +
+  #  geom_point( size=4, color="red", fill=alpha("orange", 0.3), alpha=0.7, shape=21, stroke=2)
     
     
-  })
+  # })
   output$items_plot1 = renderPlot({
-    data3 = filter(items, Klient == input$klient)
-    data3=filter(data3,Auction_ID1 == input$aukcia)
+    data3 = filter(items, Item_ID1 == input$item1)
+    #data3=filter(data3,Auction_ID1 == input$aukcia)
     #data3=filter(data3,Past_Price == input$aukcia )
-    data3$Past_Price = as.integer(data3$Past_Price)
-    ggplot(data3, aes(x=data3$Item_ID1, y=data3$Quantity)) + xlab("Item ID")+ ylab("Quantity") +  
-      #geom_segment( aes(x=data3$Item_ID1, xend=data3$Item_ID1, y=0, yend=data3$Past_Price)) +
+    #data3$Past_Price = as.integer(data3$Past_Price)
+    ggplot(data = data3, aes(x = data3$Auction_ID1, y = data3$Quantity, colour = "red")) +
+      geom_line(size=1, color="red") +
+      xlab('Auction ID') + ylab('Quantity') + theme_bw() +   
       geom_point( size=4, color="red", fill=alpha("orange", 0.3), alpha=0.7, shape=21, stroke=2)
     
   })
   output$items_table <- renderDataTable({
-    data3 = filter(items, Klient == input$klient)
-    data3=filter(data3, Auction_ID1 == input$aukcia)
+    data3 = filter(items, Item_ID1 == input$item1)
+    #data3=filter(data3, Auction_ID1 == input$aukcia)
     datatable(data3)
   })
   
