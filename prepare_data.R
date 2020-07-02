@@ -118,7 +118,7 @@ prepareItems = function(items){
   names(items)[names(items) == '_mnozstvi_string'] <- 'Quantity'
   names(items)[names(items) == '_cena_minula_string'] <- 'Past_Price'
   #library(dplyr)
-  #items=select(items, Klient, Auction_ID1, Item_ID1, Quantity, Past_Price)
+  items=items[c(1:13)]
   return(items)
 }
 
