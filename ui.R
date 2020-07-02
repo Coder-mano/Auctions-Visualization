@@ -72,20 +72,20 @@ ui <- dashboardPage(
               fluidRow(
                 box(
                   width = 3,
-                  selectizeInput('klient', 'Klient',
-                                 choices = unique(items$Klient))
-                ),
-                box(
-                  width = 3,
-                  selectizeInput('aukcia', 'ID aukcie',
-                                 choices = unique(items$Auction_ID1))
+                  selectizeInput('lol', 'ItemID',
+                                 choices = items$Item_ID1)
                 )
-              ),
+                #box(
+                #width = 3,
+                # selectizeInput('aukcia', 'ID aukcie',
+                #                   choices = unique(items$Auction_ID1))
+                # )
+                 ),
               
               fluidRow(
                 box(
                   width = 12,
-                  plotOutput("items_plot"),
+                 # plotOutput("items_plot"),
                   plotOutput("items_plot1"),
                   dataTableOutput("items_table")
                 )
