@@ -72,7 +72,7 @@ ui <- dashboardPage(
               fluidRow(
                 box(
                   width = 3,
-                  selectizeInput('lol', 'ItemID',
+                  selectizeInput('item1', 'ItemID',
                                  choices = items$Item_ID1)
                 )
                 #box(
