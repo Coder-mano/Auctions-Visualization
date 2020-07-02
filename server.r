@@ -3,6 +3,19 @@
 server <- function(input, output, session) {
   
   #Home
+   #map
+  output$map <- renderLeaflet({
+    leaflet(allData) %>% 
+      addTiles() %>%
+      setView(lng=15, lat= 57,zoom=3) %>%
+      addMarkers(lng = allData$lng, lat = allData$lat,
+                 popup = ~paste("", allData$ID_State, "<br>",
+                                "Max BID: ", allData$max_BID_Value, "<br>",
+                                "Min BID: ", allData$min_BID_Value
+                 )
+      )
+  })
+  
   output$Auction_type = renderPlot({
     types = as.factor(allData$Type)
     types = droplevels(types, exclude = c("","0"))
