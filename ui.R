@@ -17,6 +17,7 @@ ui <- dashboardPage(
   dashboardBody(
     tabItems(
       tabItem(tabName = 'home', titlePanel("Dashboard"),
+              leafletOutput("map",width = "100%", height = "400px"),
               fluidRow(
                box(width = 3,title = "Overview", solidHeader = T, status = "primary",
                    print("Number of auctions"),
