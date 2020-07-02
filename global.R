@@ -5,6 +5,8 @@ library(dplyr)
 library(DT)
 library(readxl)
 library(tidyverse)
+library(leaflet)
+
 source("prepare_data.R")
 
 # Load data
