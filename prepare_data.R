@@ -1,4 +1,13 @@
 # Data preparation
+# !!!! PREMENTUJTE SI DATA  -> Offersintime -> Offersintim (len vymaz e)
+#                           -> Items -> Item (len vymaz s)
+#pretoze, nemozem ulozit data pod nazvom itmes a offersInTime (uplne dole :) )
+
+
+# Load data
+allData = read.csv('./data/HI_ALL.csv', stringsAsFactors = F, sep = ";",check.names = F)
+offersInTime = read.csv('./data/Offersintim.csv', stringsAsFactors = F, sep = ";",check.names = F)
+items=read.csv('./data/Item.csv', stringsAsFactors = F, sep = ";",check.names = F)
 
 prepareAllData <- function(allData) {
   
@@ -17,10 +26,10 @@ prepareAllData <- function(allData) {
   allData$ClientSuffix <- sub(".*-","",allData$Client)
   allData$Client <- sub("\\-.*","",allData$Client)
   
-  # Example auctions filtering
-  allData = filter(allData,auctionData_pattern == 0)
-  allData$auctionData_pattern <- NULL
-  
+  # # Example auctions filtering
+  # allData = filter(allData,auctionData_pattern == 0)
+  # allData$auctionData_pattern <- NULL
+  # 
   #---------------------MAP
   
   #replace numbers with country names
@@ -104,6 +113,7 @@ prepareOffersInTime <- function(offersInTime) {
   
 
   
+  
   # toFactor
   offersInTime$Participant_ID <- as.factor(offersInTime$Participant_ID)
   #offersInTime$New_BID <- strtoi(offersInTime$New_BID)
@@ -121,4 +131,9 @@ prepareItems = function(items){
   items=items[c(1:13)]
   return(items)
 }
+
+
+write.table(prepareOffersInTime(offersInTime),file = "./data/offersInTime.csv",row.names = F,col.names = T,sep = ",")
+write.table(prepareItems(items),file = "./data/items.csv",row.names = F,col.names = T,sep = ",")
+write.table(prepareAllData(allData),file='./data/allData.csv',row.names = F,col.names = T,sep = ",")
 
