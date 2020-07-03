@@ -8,22 +8,29 @@ library(tidyverse)
 library(leaflet)
 library(shinyWidgets)
 
-source("prepare_data.R")
+# source("prepare_data.R")
+# 
+# # Load data
+# allData = read.csv('./data/HI_ALL.csv', stringsAsFactors = F, sep = ";",check.names = F)
+# offersInTime = read.csv('./data/Offersintime.csv', stringsAsFactors = F, sep = ";",check.names = F)
+# items=read.csv('./data/Items.csv', stringsAsFactors = F, sep = ";",check.names = F)
+# 
+# 
+# # Prepare data
+# allData = prepareAllData(allData)
+# offersInTime = prepareOffersInTime(offersInTime)
+# items=prepareItems(items)
+# 
+# # ?? without effect -_-
+# offersInTime = offersInTime[offersInTime$Auction_ID %in% allData$Auction_ID,]
+# 
+# print(sapply(allData,class))
+# 
+#        
 
-# Load data
-allData = read.csv('./data/HI_ALL.csv', stringsAsFactors = F, sep = ";",check.names = F)
-offersInTime = read.csv('./data/Offersintime.csv', stringsAsFactors = F, sep = ";",check.names = F)
-items=read.csv('./data/Items.csv', stringsAsFactors = F, sep = ";",check.names = F)
 
+# !!!!!!! NAJPRV JE POTREBNE SAMOSTATNE SPUSTIT prepare_data.R a potom spustiť appku :) 
 
-# Prepare data
-allData = prepareAllData(allData)
-offersInTime = prepareOffersInTime(offersInTime)
-items=prepareItems(items)
-
-# ?? without effect -_-
-offersInTime = offersInTime[offersInTime$Auction_ID %in% allData$Auction_ID,]
-
-print(sapply(allData,class))
-
-       
+allData = data.table::fread(input = './data/allData.csv' )
+offersInTime = data.table::fread(input = './data/offersInTime.csv' )
+items = data.table::fread(input = './data/items.csv' )
