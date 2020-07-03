@@ -10,20 +10,24 @@ bidProgress <- tabItem(tabName = "bids",
                         )),
                       box(
                         width = 3,
-                        pickerInput('bidClarification',"Clarification Type",
-                                  choices=c(""), options = list(`actions-box` = TRUE),multiple = T)), #observed
+                        selectizeInput('bidClarification', 'Type Clarification', 
+                                       choices = c("") #observed na.omit(unique(allData$Type_Clarification))
+                        )),
                       box(
                         width = 3,
-                        pickerInput('bidEvaluation',"Evaluation",
-                                    choices=c(""), options = list(`actions-box` = TRUE),multiple = T)), #observed
+                        selectizeInput('bidEvaluation', 'Evaluation', 
+                                       choices = c("") #observed #na.omit(unique(allData$EvaluatedBy))
+                        )),
                       box(
                         width = 3,
-                        pickerInput('bidAuction',"Auction ID",
-                                    choices=c(""), options = list(`actions-box` = TRUE),multiple = T)), #observed
+                        selectizeInput('bidAuction', 'Auction ID', 
+                                       choices = c("") #observed #na.omit(unique(offersInTime$Auction_ID))
+                        )),
                       box(
                         width = 3,
-                        pickerInput('bidItem',"Item ID",
-                                    choices=c(""), options = list(`actions-box` = TRUE),multiple = T)), #observed
+                        selectizeInput('bidItem', 'Item ID', 
+                                       choices = c("") #observed
+                        )),
                       box(
                         radioButtons("group", "Docasny button:",
                                      c("Agregated" = "agregated",
@@ -46,7 +50,7 @@ bidProgress <- tabItem(tabName = "bids",
 
 # Observe Type selection
 bidTypeObserver <- function(input,session) {
-  updatePickerInput(
+  updateSelectInput(
     session, 'bidClarification',    # Update lower hierarchy dropdown
     choices = na.omit(unique(filter(allData, Type == input$bidType)$Type_Clarification))
   )
@@ -55,54 +59,34 @@ bidTypeObserver <- function(input,session) {
 
 # Observe Type Clarification
 bidClarificationObserver <- function(input,session) {
-  if(length(input$bidClarification) > 0){
-    updatePickerInput(
-      session, 'bidEvaluation',
-      choices = na.omit(unique(filter(allData, Type == input$bidType & is.element(Type_Clarification, input$bidClarification))$Evaluated_By))
-    )
-  }
-  # nothing selected
-  else{
-    print(input$bidClarification)
-    updatePickerInput(
-      session, 'bidEvaluation',
-      choices = na.omit(unique(filter(allData, Type == input$bidType)$Evaluated_By))
-    )
-  }
-  
+  updateSelectInput(
+    session, 'bidEvaluation',
+    choices = na.omit(unique(filter(allData, Type == input$bidType & Type_Clarification == input$bidClarification)$Evaluated_By))
+  )
   bidEvaluationObserver(input,session)
 }
 
 # Observe Evaluation selection
 bidEvaluationObserver <- function(input,session) {
-  if(length(input$bidEvaluation) > 0 & length(input$bidClarification) > 0){
-    updatePickerInput(
-      session, 'bidAuction',
-      choices = na.omit(unique(filter(allData, is.element(Evaluated_By, input$bidEvaluation) & Type == input$bidType & is.element(Type_Clarification, input$bidClarification))$Auction_ID))
-    )
-  }
-  # nothing selected
-  else{
-    updatePickerInput(
-      session, 'bidAuction',
-      choices = na.omit(unique(filter(allData, Type == input$bidType)$Auction_ID))
-    )
-  }
+  updateSelectInput(
+    session, 'bidAuction',
+    choices = na.omit(unique(filter(allData, Evaluated_By == input$bidEvaluation & Type == input$bidType & Type_Clarification == input$bidClarification)$Auction_ID))
+  )
 }
 
 bidRenderAuctionPlot <- function(input,output,session){
-  updatePickerInput(
+  updateSelectInput(
     session, 'bidItem',
-    choices = unique(filter(offersInTime, is.element(Auction_ID, input$bidAuction))$Item_ID)
+    choices = filter(offersInTime, Auction_ID == input$bidAuction)$Item_ID
   )
   return(renderPlot({
     
     # basic tmp filtering
-    subData = filter(offersInTime, is.element(Item_ID, input$bidItem))
-    subData = filter(subData, is.element(Auction_ID, input$bidAuction))
+    subData = filter(offersInTime, Item_ID == input$bidItem)
+    subData = filter(subData, Auction_ID == input$bidAuction)
     #print(sapply(subData,class))
     
-    desc = filter(allData, is.element(Auction_ID, input$bidAuction))
+    desc = filter(allData, Auction_ID == input$bidAuction)
     desc = filter(desc, Client == subData$Client[1])
     
     subData$New_BID = as.integer(subData$New_BID)
