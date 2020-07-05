@@ -188,7 +188,7 @@ server <- function(input, output, session) {
       kategoria_prodej =  prodej_table[prodej_table$Poradie == poradie]
       kategoria_prodej =  kategoria_prodej[,kategoria_prodej$Type_Clarification]
       kategoria_prodej = as.data.table(table(kategoria_prodej))
-      fig <- plot_ly(kategoria_nakup, x = ~kategoria_nakup, y = ~N, type = 'bar', name = 'Ucastnici')%>%
+      fig <- plot_ly(kategoria_prodej, x = ~kategoria_prodej, y = ~N, type = 'bar', name = 'Ucastnici')%>%
         layout(
           xaxis = list(
             title = "Kategorie aukcie"),
