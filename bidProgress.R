@@ -96,18 +96,18 @@ bidRenderAuctionPlot <- function(input,output,session){
     })
     
     
-    
+    subData$Participant_ID <- as.character(subData$Participant_ID)
     if (nrow(subData) != 0) { 
       if (input$group == "agregated") {
         ggplot(data = subData, aes(x = subData$Change_order, y = subData$New_BID, colour = "red")) +
           geom_line() + guides(color = FALSE, size = FALSE) +
-          xlab('Change_order') + theme_bw() +   geom_point()
+          xlab('Change_order') + ylab('New_BID') + theme_bw() +   geom_point() 
         
       }else if(input$group == "participants"){
         col = ifelse(input$bidItem == "All","New_BID_Total","New_BID")
-        ggplot(data = subData, aes(x = subData$Change_order, y = subData[,c(col)], colour = c(subData$Participant_ID),group = subData$Participant_ID)) +
+        ggplot(data = subData, aes(x = subData$Change_order, y = subData[,c(col)], colour = subData$Participant_ID,group = subData$Participant_ID)) +
           geom_line() +
-          xlab('Change_order') + ylab(col) + theme_bw() +   geom_point()
+          xlab('Change_order') + ylab(c(col)) + theme_bw() +   geom_point()+ guides(fill=guide_legend(title="Participants"))
         
       }else{
         
@@ -115,12 +115,12 @@ bidRenderAuctionPlot <- function(input,output,session){
           subData2 <- filter(subData, Best_Bids != 0)
           ggplot(data = subData2, aes(x = subData2$Change_order, y = subData2$Best_Bids, colour = "red")) +
             geom_line() +
-            xlab('Change_order') + theme_bw() + geom_point()
+            xlab('Change_order') + ylab('Best Bids') + theme_bw() + geom_point()
         }else{
           subData2 <- filter(subData, subData$Best_Bids_Items != 0)
           ggplot(data = subData2, aes(x = subData2$Change_order, y = subData2$Best_Bids_Items, colour = "red")) +
             geom_line() +
-            xlab('Change_order') + theme_bw() + geom_point()
+            xlab('Change_order') + ylab('Best Bids')+ theme_bw() + geom_point()
         }
       }
     }
