@@ -11,6 +11,7 @@ ui <- dashboardPage(
     menuItem("Bid progress", tabName = "bids", icon = icon("money")),
     menuItem("Items", tabName = "items", icon = icon("bong")),
     menuItem("Participants", tabName = "part", icon = icon("users")),
+    menuItem("Attribute Information", tabName = "att_info", icon = icon("database")),
     menuItem("Task List", tabName = "authors", icon = icon("share-alt"))
   )),
   
@@ -133,7 +134,28 @@ ui <- dashboardPage(
       ),
       
       tabItem(tabName = "authors",
-              tableOutput('authors'))
+              tableOutput('authors')),
+      
+      
+      tabItem(tabName = "att_info",
+              selectInput("datatype",
+                          label = h2("Choose atribute"), 
+                          choices = c("Type" = "1", 
+                                      "Accessibility" = "2",
+                                      "Most Used Currency" = "3",
+                                      "Auction Evaluation" = "4",
+                                      "Clarification" = "5"
+                          ),
+                          
+                          selected = "Type"),
+              h3(textOutput("atribute_info")),
+              plotOutput("graph")
+              
+      )
+      
+      
+      
+      
     )
   )
 )
