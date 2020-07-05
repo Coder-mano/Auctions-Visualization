@@ -7,7 +7,7 @@ ui <- dashboardPage(
     menuItem("Home", tabName = "home", icon = icon("home")),
     menuItem("Data", tabName = "data", icon = icon("database")),
     menuItem("Overview", tabName = "m_overview", icon = icon("line-chart")),
-    menuItem("Auctions", tabName = "auction", icon = icon("line-chart")),
+    #menuItem("Auctions", tabName = "auction", icon = icon("line-chart")),
     menuItem("Bid progress", tabName = "bids", icon = icon("money")),
     menuItem("Items", tabName = "items", icon = icon("bong")),
     menuItem("Participants", tabName = "part", icon = icon("users")),
@@ -63,10 +63,8 @@ ui <- dashboardPage(
                                     DT::dataTableOutput('items'),
                                     width = 12, solidHeader = T,
                                     status = 'warning'))
-                     ),tabPanel("futuretab")
+                     )
               )),
-      
-      auctions,
       bidProgress,
       tabItem(tabName = "items",
               fluidRow(
