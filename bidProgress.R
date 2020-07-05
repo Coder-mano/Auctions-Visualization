@@ -10,7 +10,7 @@ bidProgress <- tabItem(tabName = "bids",
                                     )),
                              column(width = 4,
                                     selectizeInput('bidClarification', 'Type Clarification', 
-                                                   choices = c("") #observed na.omit(unique(allData$Type_Clarification))
+                                                   choices = c("") #observed na.omit(unique(allData$Type_Combined))
                                     )),
                              column(
                                width = 4,
@@ -29,9 +29,10 @@ bidProgress <- tabItem(tabName = "bids",
                                )),
                              column(
                                width = 4,
-                               radioButtons("group", "Docasny button:",
+                               radioButtons("group", NULL,
                                             c("Agregated" = "agregated",
-                                              "Participants" = "participants"))
+                                              "Participants" = "participants",
+                                              "Progress" = "progres"))
                              ),
                              column(
                                width = 12,
@@ -48,7 +49,7 @@ bidProgress <- tabItem(tabName = "bids",
 bidTypeObserver <- function(input,session) {
   updateSelectInput(
     session, 'bidClarification',    # Update lower hierarchy dropdown
-    choices = na.omit(unique(filter(allData, Type == input$bidType)$Type_Clarification))
+    choices = na.omit(unique(filter(allData, Type == input$bidType)$Type_Combined))
   )
   bidClarificationObserver(input,session)  
 }
@@ -57,7 +58,7 @@ bidTypeObserver <- function(input,session) {
 bidClarificationObserver <- function(input,session) {
   updateSelectInput(
     session, 'bidEvaluation',
-    choices = na.omit(unique(filter(allData, Type == input$bidType & Type_Clarification == input$bidClarification)$Evaluated_By))
+    choices = na.omit(unique(filter(allData, Type == input$bidType & Type_Combined == input$bidClarification)$Evaluated_By))
   )
   bidEvaluationObserver(input,session)
 }
@@ -66,20 +67,22 @@ bidClarificationObserver <- function(input,session) {
 bidEvaluationObserver <- function(input,session) {
   updateSelectInput(
     session, 'bidAuction',
-    choices = na.omit(unique(filter(allData, Evaluated_By == input$bidEvaluation & Type == input$bidType & Type_Clarification == input$bidClarification)$Auction_ID))
+    choices = na.omit(unique(filter(allData, Evaluated_By == input$bidEvaluation & Type == input$bidType & Type_Combined == input$bidClarification)$Auction_ID))
   )
 }
 
 bidRenderAuctionPlot <- function(input,output,session){
   updateSelectInput(
     session, 'bidItem',
-    choices = filter(offersInTime, Auction_ID == input$bidAuction)$Item_ID
+    choices = c("All",filter(offersInTime, Auction_ID == input$bidAuction)$Item_ID)
   )
   return(renderPlot({
     
     # basic tmp filtering
-    subData = filter(offersInTime, Item_ID == input$bidItem)
-    subData = filter(subData, Auction_ID == input$bidAuction)
+    subData = filter(offersInTime, Auction_ID == input$bidAuction)
+    subData = filter(subData, Client == subData$Client[1])
+    if(input$bidItem != "All")
+      subData = filter(subData, Item_ID == input$bidItem)
     #print(sapply(subData,class))
     
     desc = filter(allData, Auction_ID == input$bidAuction)
@@ -92,18 +95,34 @@ bidRenderAuctionPlot <- function(input,output,session){
       datatable(desc, rownames = F,options = list(scrollX = TRUE))
     })
     
+    
+    
     if (nrow(subData) != 0) { 
-    if (input$group == "agregated") {
-    ggplot(data = subData, aes(x = subData$Change_order, y = subData$New_BID, colour = "red")) +
-      geom_line() + guides(color = FALSE, size = FALSE) +
-      xlab('Change_order') + theme_bw() + geom_point()
-    }else{
-      ggplot(data = subData, aes(x = subData$Change_order, y = subData$New_BID, colour = subData$Participant_ID,group = subData$Participant_ID)) +
-        geom_line() +
-        xlab('Change_order') + theme_bw() +   geom_point()
-    }
+      if (input$group == "agregated") {
+        ggplot(data = subData, aes(x = subData$Change_order, y = subData$New_BID, colour = "red")) +
+          geom_line() + guides(color = FALSE, size = FALSE) +
+          xlab('Change_order') + theme_bw() +   geom_point()
+        
+      }else if(input$group == "participants"){
+        col = ifelse(input$bidItem == "All","New_BID_Total","New_BID")
+        ggplot(data = subData, aes(x = subData$Change_order, y = subData[,c(col)], colour = c(subData$Participant_ID),group = subData$Participant_ID)) +
+          geom_line() +
+          xlab('Change_order') + ylab(col) + theme_bw() +   geom_point()
+        
+      }else{
+        
+        if (input$bidItem == "All") {
+          subData2 <- filter(subData, Best_Bids != 0)
+          ggplot(data = subData2, aes(x = subData2$Change_order, y = subData2$Best_Bids, colour = "red")) +
+            geom_line() +
+            xlab('Change_order') + theme_bw() + geom_point()
+        }else{
+          subData2 <- filter(subData, subData$Best_Bids_Items != 0)
+          ggplot(data = subData2, aes(x = subData2$Change_order, y = subData2$Best_Bids_Items, colour = "red")) +
+            geom_line() +
+            xlab('Change_order') + theme_bw() + geom_point()
+        }
+      }
     }
   }))
-  
-  
 }

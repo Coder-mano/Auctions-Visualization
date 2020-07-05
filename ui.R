@@ -108,7 +108,7 @@ ui <- dashboardPage(
                               choices = unique(participants$Poradie)),
                   plotlyOutput("participants_plot",height = "400px", width = "400px")
                 )
-              ),
+              )
               
               
       ),

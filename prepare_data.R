@@ -1,13 +1,15 @@
-# Data preparation
-# !!!! PREMENTUJTE SI DATA  -> Offersintime -> Offersintim (len vymaz e)
-#                           -> Items -> Item (len vymaz s)
-#pretoze, nemozem ulozit data pod nazvom itmes a offersInTime (uplne dole :) )
-
-
 # Load data
+#allData = read.csv('./data/HI_ALL.csv', stringsAsFactors = F, sep = ";",check.names = F)
+#offersInTime = read.csv('./data/Offersintim.csv', stringsAsFactors = F, sep = ";",check.names = F)
+#items=read.csv('./data/Item.csv', stringsAsFactors = F, sep = ";",check.names = F)
+
+# UPDATE: uz netreba premenovavat
+
+source("prep_functions.R")
+
 allData = read.csv('./data/HI_ALL.csv', stringsAsFactors = F, sep = ";",check.names = F)
-offersInTime = read.csv('./data/Offersintim.csv', stringsAsFactors = F, sep = ";",check.names = F)
-items=read.csv('./data/Item.csv', stringsAsFactors = F, sep = ";",check.names = F)
+offersInTime = read.csv('./data/Offersintime.csv', stringsAsFactors = F, sep = ";",check.names = F)
+items=read.csv('./data/Items.csv', stringsAsFactors = F, sep = ";",check.names = F)
 
 prepareAllData <- function(allData) {
   
@@ -25,6 +27,9 @@ prepareAllData <- function(allData) {
   # Client ID trimming
   allData$ClientSuffix <- sub(".*-","",allData$Client)
   allData$Client <- sub("\\-.*","",allData$Client)
+  
+  allData$Type_Combined <- apply(allData[,c("Type","Type_Clarification")],M = 1, FUN = findType)
+  allData$Type_Combined  <- vapply(allData$Type_Combined , paste, collapse = "", character(1L))
   
   # # Example auctions filtering
   # allData = filter(allData,auctionData_pattern == 0)
@@ -111,13 +116,15 @@ prepareOffersInTime <- function(offersInTime) {
   names(offersInTime)[names(offersInTime) == 'cas'] <- 'Date'
   names(offersInTime)[names(offersInTime) == 'ID ucastnika'] <- 'Participant_ID'
   
-
+  
   
   
   # toFactor
   offersInTime$Participant_ID <- as.factor(offersInTime$Participant_ID)
   #offersInTime$New_BID <- strtoi(offersInTime$New_BID)
   offersInTime$Date = as.POSIXct(offersInTime$Date, format= " %d.%m.%y %H:%M")
+  
+  #offersInTime = addTotalBids(offersInTime)
   
   return(offersInTime) 
 }
@@ -133,7 +140,17 @@ prepareItems = function(items){
 }
 
 
-write.table(prepareOffersInTime(offersInTime),file = "./data/offersInTime.csv",row.names = F,col.names = T,sep = ",")
-write.table(prepareItems(items),file = "./data/items.csv",row.names = F,col.names = T,sep = ",")
-write.table(prepareAllData(allData),file='./data/allData.csv',row.names = F,col.names = T,sep = ",")
+#write.table(prepareOffersInTime(offersInTime),file = "./data/offersInTime.csv",row.names = F,col.names = T,sep = ",")
+#write.table(prepareItems(items),file = "./data/items.csv",row.names = F,col.names = T,sep = ",")
+#write.table(prepareAllData(allData),file='./data/allData.csv',row.names = F,col.names = T,sep = ",")
 
+allData = prepareAllData(allData)
+offersInTime = prepareOffersInTime(offersInTime)
+items = prepareItems(items)
+
+# create folder & save prepared data
+dir.create("data/prepared_data", showWarnings = FALSE)
+
+write.csv2(allData, "./data/prepared_data/allData.csv", row.names = FALSE)
+write.csv2(offersInTime, "./data/prepared_data/offersInTime.csv", row.names = FALSE)
+write.csv2(items, "./data/prepared_data/items.csv", row.names = FALSE)
