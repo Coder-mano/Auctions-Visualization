@@ -109,6 +109,96 @@ server <- function(input, output, session) {
     datatable(data3)
   })
   
+  #Participants
+  output$participants_table <- renderDataTable({
+    
+    dt1 = as.data.table(participants, key = c("Klient","ID aukcie"))
+    dt2 = as.data.table(allData, key = c("Client","Auction_ID"))
+    colnames(dt1) = c("Client",
+                      "Auction_ID",
+                      "ID_ucastnika",
+                      "Poradie",
+                      "x",
+                      "y",
+                      "z",
+                      "mozu_chybat")
+    dt1$Client = as.numeric(dt1$Client)
+    merged_table = merge(dt1,dt2, by = c("Client","Auction_ID"))
+    
+    
+    kategory = input$kategoria
+    
+    if(kategory == "vsetky kategorie"){
+      vyhrane_aukcie_0 = merged_table[merged_table$Poradie == 1,][,3]
+      
+      tab1 = table(vyhrane_aukcie_0)
+      tab1 = as.data.frame(tab1)
+      colnames(tab1) = c("ID_ucastnika","pocet_vyher")
+      tab1 = tab1[order(-tab1$pocet_vyher),]
+    }
+    
+    else {
+      vyhrane_aukcie_0 = merged_table[merged_table$Poradie == 1 & merged_table$Type_Clarification == kategory,][,3]
+      
+      tab1 = table(vyhrane_aukcie_0)
+      tab1 = as.data.frame(tab1)
+      colnames(tab1) = c("ID_ucastnika","pocet_vyher")
+      tab1 = tab1[order(-tab1$pocet_vyher),]
+    }
+    
+    datatable(tab1)
+  })
+  output$participants_plot = renderPlotly({
+    
+    dt1 = as.data.table(participants, key = c("Klient","ID aukcie"))
+    dt2 = as.data.table(allData, key = c("Client","Auction_ID"))
+    colnames(dt1) = c("Client",
+                      "Auction_ID",
+                      "ID_ucastnika",
+                      "Poradie",
+                      "x",
+                      "y",
+                      "z",
+                      "mozu_chybat")
+    dt1$Client = as.numeric(dt1$Client)
+    merged_table = merge(dt1,dt2, by = c("Client","Auction_ID"))
+    
+    nakup_table = merged_table[Type =="nakup"]
+    prodej_table = merged_table[Type =="prodej"]
+    
+    
+    if (input$typ == "Nakup"){
+      poradie = as.numeric(input$umiestnenie)
+      
+      kategoria_nakup =  nakup_table[nakup_table$Poradie == poradie]
+      kategoria_nakup =  kategoria_nakup[,kategoria_nakup$Type_Clarification]
+      kategoria_nakup = as.data.table(table(kategoria_nakup))
+      
+      fig <- plot_ly(kategoria_nakup, x = ~kategoria_nakup, y = ~N, type = 'bar', name = 'Ucastnici')%>%
+        layout(
+          xaxis = list(
+            title = "Kategorie aukcie"),
+          yaxis = list(
+            title = "Pocet ucastnikov"),
+          autosize=FALSE)
+    }
+    else {
+      poradie = as.numeric(input$umiestnenie)
+      
+      kategoria_prodej =  prodej_table[prodej_table$Poradie == poradie]
+      kategoria_prodej =  kategoria_prodej[,kategoria_prodej$Type_Clarification]
+      kategoria_prodej = as.data.table(table(kategoria_prodej))
+      fig <- plot_ly(kategoria_nakup, x = ~kategoria_nakup, y = ~N, type = 'bar', name = 'Ucastnici')%>%
+        layout(
+          xaxis = list(
+            title = "Kategorie aukcie"),
+          yaxis = list(
+            title = "Pocet ucastnikov"),
+          autosize=FALSE)
+    }
+    fig
+  })
+  
   # Overview ---------------
   output$num_auctions <- renderValueBox({
     my_data = subset(items, Klient == input$m_klient)
