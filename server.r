@@ -128,7 +128,7 @@ server <- function(input, output, session) {
     
     kategory = input$kategoria
     
-    if(kategory == "vsetky kategorie"){
+    if(kategory == "All categories"){
       vyhrane_aukcie_0 = merged_table[merged_table$Poradie == 1,][,3]
       
       tab1 = table(vyhrane_aukcie_0)
@@ -163,23 +163,23 @@ server <- function(input, output, session) {
     dt1$Client = as.numeric(dt1$Client)
     merged_table = merge(dt1,dt2, by = c("Client","Auction_ID"))
     
-     nakup_table = merged_table[Type =="Purchase"]
-    prodej_table = merged_table[Type =="Sale"]
+   
     
     
-    if (input$typ == "Nakup"){
+    
+    if (input$typ == "Purchase"){
       poradie = as.numeric(input$umiestnenie)
       
       kategoria_nakup =  nakup_table[nakup_table$Poradie == poradie]
       kategoria_nakup =  kategoria_nakup[,kategoria_nakup$Type_Clarification]
       kategoria_nakup = as.data.table(table(kategoria_nakup))
       
-      fig <- plot_ly(kategoria_nakup, x = ~kategoria_nakup, y = ~N, type = 'bar', name = 'Ucastnici')%>%
+      fig <- plot_ly(kategoria_nakup, x = ~kategoria_nakup, y = ~N, type = 'bar', name = 'Participants')%>%
         layout(
           xaxis = list(
-            title = "Kategorie aukcie"),
+            title = "Auction Categories"),
           yaxis = list(
-            title = "Pocet ucastnikov"),
+            title = "Number of participants"),
           autosize=FALSE)
     }
     else {
@@ -188,16 +188,17 @@ server <- function(input, output, session) {
       kategoria_prodej =  prodej_table[prodej_table$Poradie == poradie]
       kategoria_prodej =  kategoria_prodej[,kategoria_prodej$Type_Clarification]
       kategoria_prodej = as.data.table(table(kategoria_prodej))
-      fig <- plot_ly(kategoria_prodej, x = ~kategoria_prodej, y = ~N, type = 'bar', name = 'Ucastnici')%>%
+      fig <- plot_ly(kategoria_prodej, x = ~kategoria_prodej, y = ~N, type = 'bar', name = 'Participants')%>%
         layout(
           xaxis = list(
-            title = "Kategorie aukcie"),
+            title = "Auction Categories"),
           yaxis = list(
-            title = "Pocet ucastnikov"),
+            title = "Number of participants"),
           autosize=FALSE)
     }
     fig
   })
+  
   
   # Overview ---------------
   output$num_auctions <- renderValueBox({
