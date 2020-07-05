@@ -264,4 +264,70 @@ server <- function(input, output, session) {
   output$authors <- renderTable({
     read_excel(paste('tasks', ".xlsx", sep=""), 1)
   })
+  
+  
+  # Data Info
+  
+  #GRAFY
+  output$graph = renderPlot({
+    if (input$datatype == "1") {
+      types = as.factor(allData$Type)
+      types = droplevels(types, exclude = c("","0"))
+      types = na.omit(types)
+      pie(table(types), col = rainbow(2), main = "Type", labels = c("Buy", "Sell"))
+      
+    }
+    else if (input$datatype == "2") {
+      publicAuction = as.factor(allData$`_auctionData_verejna_string`)
+      publicAuction = na.omit(publicAuction)
+      levels(publicAuction) = c("Private", "Public")
+      barplot(table(publicAuction), col = rainbow(2), main = "Auction Accessibility", ylim = c(0,15000))
+    } 
+    else if (input$datatype == "3") {
+      currency = as.factor(allData$`_auctionData_mena_string`)
+      currency = droplevels(currency, exclude = c("ks", "THB", "0", "GBP", "%", "AUD", "I", "RUB", "<NA>"))
+      barplot(table(currency), col = rainbow(7), main = "Most Used Currency", ylim = c(0,15000))    
+    }
+    else if (input$datatype == "4") {
+      evaluation_type = as.factor(allData$Evaluated_By)
+      evaluation_type = droplevels(evaluation_type, exclude = c("", "2722195"))
+      evaluation_type = na.omit(evaluation_type)
+      barplot(table(evaluation_type), col = rainbow(7), main = "Auction Evaluation by", ylim = c(0,15000))
+    }
+    else if (input$datatype == "5") {
+      clarification = as.factor(allData$Type_Clarification)
+      clarification = droplevels(clarification, exclude = c("", "0", "25", "278", "3"))
+      clarification = na.omit(clarification)
+      barplot(table(clarification), col = rainbow(10), main = "Clarification Type", ylim = c(0,15000))
+    } 
+    
+    
+  })
+  
+  #TExT
+  output$atribute_info = renderText({
+    if (input$datatype == "1") {
+      paste("This attribute tells you whether the auction was used to buy or sell.")
+    }
+    else if (input$datatype == "2") {
+      paste("Accessibility attribute says who is able to reach the auction. There are only two options - private and public. Public Auctions are available for everyone. The value of the current high bid is displayed on the listing page. Buyers who want to win the auction make bids that are higher than the current high bid.
+In a private sale, the offers made to the seller are kept private - even after the sale is completed. No one but the buyer and seller will know what a property sold for.")
+    }
+    else if (input$datatype == "3") {
+      paste("This chart shows which currency is most used in transactions. Different currencies can be used in the system from which the data originates. The most used are euros and Czech crowns.")
+    }
+    else if (input$datatype == "4") {
+      paste("Atribute Auction Evaluation says more about auction and how it is evaluated. This evaluation of auction depends on auction type - Absolute Auction, Minimum-Bid Auction, Multi-Parcel Auction, Reserve Auction,...")
+    }
+    else if (input$datatype == "5") {
+      paste("This attribute clarifies the type of auction in the data. Only some data have this closer specification. The graph shows the number of individual values, but also the number of undefined ones.")
+    }
+    
+    
+  })
+  
+  
+  
+  
+  
 }
