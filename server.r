@@ -164,7 +164,8 @@ server <- function(input, output, session) {
     merged_table = merge(dt1,dt2, by = c("Client","Auction_ID"))
     
    
-    
+    nakup_table = merged_table[Type =="Purchase"]
+    prodej_table = merged_table[Type =="Sale"]
     
     
     if (input$typ == "Purchase"){
