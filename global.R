@@ -6,6 +6,8 @@ library(DT)
 library(readxl)
 library(tidyverse)
 library(leaflet)
+library(data.table)
+library(plotly)
 
 # source("prepare_data.R")
 # 
@@ -33,3 +35,4 @@ library(leaflet)
 allData = data.table::fread(input = './data/allData.csv' )
 offersInTime = data.table::fread(input = './data/offersInTime.csv' )
 items = data.table::fread(input = './data/items.csv' )
+participants = data.table::fread(input = './data/Orderparticipant.csv')
