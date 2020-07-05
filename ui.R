@@ -90,21 +90,21 @@ ui <- dashboardPage(
               )
       ),
       
-      tabItem(tabName = "part",
+       tabItem(tabName = "part",
               fluidRow(
                 box(
                   width = 10,
-                  selectInput("kategoria", "Kategoria Aukcie:",
-                              choices = c("vsetky kategorie",unique(allData$Type_Clarification))),
+                  selectInput("kategoria", "Auction category:",
+                              choices = c("All categories",unique(allData$Type_Clarification))),
                   dataTableOutput("participants_table")
                 )
               ),
               fluidRow(
                 box(
                   width = 7,
-                  selectInput("typ", "Typ Aukcie:",
-                              choices = c("Nakup","Predaj")),
-                  selectInput("umiestnenie", "Umiestnenie ucastnika:",
+                  selectInput("typ", "Type of auction:",
+                              choices = c("Purchase","Sale")),
+                  selectInput("umiestnenie", "Participant position:",
                               choices = unique(participants$Poradie)),
                   plotlyOutput("participants_plot",height = "400px", width = "400px")
                 )
