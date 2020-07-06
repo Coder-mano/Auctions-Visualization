@@ -74,7 +74,7 @@ bidEvaluationObserver <- function(input,session) {
 bidRenderAuctionPlot <- function(input,output,session){
   updateSelectInput(
     session, 'bidItem',
-    choices = c("All",filter(offersInTime, Auction_ID == input$bidAuction)$Item_ID)
+    choices = c("All",filter(offersInTime, Auction_ID == input$bidAuction & Client == offersInTime$Client[1])$Item_ID)
   )
   return(renderPlot({
     
