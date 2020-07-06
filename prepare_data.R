@@ -124,7 +124,7 @@ prepareOffersInTime <- function(offersInTime) {
   #offersInTime$New_BID <- strtoi(offersInTime$New_BID)
   offersInTime$Date = as.POSIXct(offersInTime$Date, format= " %d.%m.%y %H:%M")
   
-  #offersInTime = addTotalBids(offersInTime)
+  offersInTime = addTotalBids(offersInTime)
   
   return(offersInTime) 
 }
