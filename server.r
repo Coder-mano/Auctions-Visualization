@@ -35,7 +35,7 @@ server <- function(input, output, session) {
     evaluation_type = as.factor(allData$Evaluated_By)
     evaluation_type = droplevels(evaluation_type, exclude = c("", "2722195"))
     evaluation_type = na.omit(evaluation_type)
-    pie(table(evaluation_type), col = rainbow(7), main = "Auction Evaluation by",labels = "")
+    pie(table(evaluation_type), col = rainbow(7), main = "Auction Evaluation by")
   })
   
   # Data
