@@ -8,11 +8,11 @@ server <- function(input, output, session) {
     leaflet(allData) %>% 
       addTiles() %>%
       setView(lng=15, lat= 57,zoom=3) %>%
-      addMarkers(lng = allData$lng, lat = allData$lat,
-                 popup = ~paste("", allData$ID_State, "<br>",
-                                "Max BID: ", allData$max_BID_Value, "<br>",
-                                "Min BID: ", allData$min_BID_Value
-                 )
+      addMarkers(lng = map_data$lng, lat = map_data$lat,
+                 popup = ~paste("", map_data$ID_State, "<br>",
+                                "Max BID: ", map_data$max_BID_Value, "<br>",
+                                "Min BID: ", map_data$min_BID_Value
+                 ) , clusterOptions = markerClusterOptions()
       )
   })
   
