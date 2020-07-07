@@ -29,17 +29,11 @@ source("prepare_data.R")
 # 
 #        
 
-
-# !!!!!!! NAJPRV JE POTREBNE SAMOSTATNE SPUSTIT prepare_data.R a potom spustiť appku :) 
-
-#allData = data.table::fread(input = './data/allData.csv' )
-#offersInTime = data.table::fread(input = './data/offersInTime.csv' )
-#items = data.table::fread(input = './data/items.csv' )
-#participants = data.table::fread(input = './data/Orderparticipant.csv')
-
 allData = read.csv2('./data/prepared_data/allData.csv', stringsAsFactors = F, sep = ";",check.names = F)
 offersInTime = read.csv2('./data/prepared_data/offersInTime.csv', stringsAsFactors = F, sep = ";",check.names = F)
-items = read.csv2('./data/prepared_data/items.csv', stringsAsFactors = F, sep = ";",check.names = F)
-participants=read.csv('./data/Orderparticipant.csv', stringsAsFactors = F, sep = ";",check.names = F)
+offersInTime$Participant_ID <- as.factor(offersInTime$Participant_ID)
 
+items = read.csv2('./data/prepared_data/items.csv', stringsAsFactors = F, sep = ";",check.names = F)
+participants = data.table::fread(input = './data/Orderparticipant.csv')
+map_data = prepareMapData(allData)
 

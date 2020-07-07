@@ -3,16 +3,15 @@
 server <- function(input, output, session) {
   
   #Home
-   #map
   output$map <- renderLeaflet({
     leaflet(allData) %>% 
       addTiles() %>%
       setView(lng=15, lat= 57,zoom=3) %>%
-      addMarkers(lng = map_data$lng, lat = map_data$lat,
+      addMarkers(lng = as.numeric(map_data$lng), lat = as.numeric(map_data$lat),
                  popup = ~paste("", map_data$ID_State, "<br>",
                                 "Max BID: ", map_data$max_BID_Value, "<br>",
                                 "Min BID: ", map_data$min_BID_Value
-                 ) , clusterOptions = markerClusterOptions()
+                 ) 
       )
   })
   
@@ -38,6 +37,7 @@ server <- function(input, output, session) {
     pie(table(evaluation_type), col = rainbow(7), main = "Auction Evaluation by")
   })
   
+  
   # Data
   output$allData = DT::renderDataTable({
     datatable(allData, rownames = F,options = list(scrollX = TRUE))
@@ -48,6 +48,7 @@ server <- function(input, output, session) {
   output$items = DT::renderDataTable({
     datatable(items, rownames = F,options = list(scrollX = TRUE))
   })
+  
   
   # Auctions
   observeEvent(input$type,{
@@ -63,6 +64,7 @@ server <- function(input, output, session) {
   observeEvent(input$auction,{ 
     output$auctions <- renderAuctionPlot(input,output,session)
   })
+  
   
   #Bids progress 
   observeEvent(input$bidType,{
@@ -80,34 +82,22 @@ server <- function(input, output, session) {
   })
   
   
-  # Items ---------------
-  # output$items_plot = renderPlot({
-  # data3 = filter(items, Klient == input$klient)
-  # data3=filter(data3,Auction_ID1 == input$aukcia)
-    #data3=filter(data3,Past_Price == input$aukcia )
-  #  data3$Past_Price = as.integer(data3$Past_Price)
-  #  ggplot(data3, aes(x=data3$Auction_ID1, y=data3$Past_Price)) + xlab("Item ID")+ ylab("Past price") +
-  #  geom_segment( aes(x=data3$Auction_ID1, xend=data3$Auction_ID1, y=0, yend=data3$Past_Price)) +
-  #  geom_point( size=4, color="red", fill=alpha("orange", 0.3), alpha=0.7, shape=21, stroke=2)
-    
-    
-  # })
-  output$items_plot1 = renderPlot({
-    data3 = filter(items, Item_ID1 == input$item1)
-    #data3=filter(data3,Auction_ID1 == input$aukcia)
-    #data3=filter(data3,Past_Price == input$aukcia )
-    #data3$Past_Price = as.integer(data3$Past_Price)
-    ggplot(data = data3, aes(x = data3$Auction_ID1, y = data3$Quantity, colour = "red")) +
-      geom_line(size=1, color="red") +
-      xlab('Auction ID') + ylab('Quantity') + theme_bw() +   
-      geom_point( size=4, color="red", fill=alpha("orange", 0.3), alpha=0.7, shape=21, stroke=2)
-    
+  # Items
+  output$items_plot = renderPlot({
+    colors = c("Past_Price" = "blue", "Quantity" = "red")
+    data3 = filter(items, Item_ID1 == input$itemIn)
+    ggplot(data3, aes(x=data3$Auction_ID1))+
+      geom_line(aes(y=data3$Past_Price, color="Past_Price"), size = 1.2)+
+      geom_line(aes(y=data3$Quantity, color="Quantity"), size = 1.2)+
+      labs(x="Auction ID",y="Value", color="Legend")+
+      scale_color_manual(values=colors)
   })
+  
   output$items_table <- renderDataTable({
-    data3 = filter(items, Item_ID1 == input$item1)
-    #data3=filter(data3, Auction_ID1 == input$aukcia)
+    data3 = filter(items, Item_ID1 == input$itemIn)
     datatable(data3)
   })
+  
   
   #Participants
   output$participants_table <- renderDataTable({
@@ -123,6 +113,8 @@ server <- function(input, output, session) {
                       "z",
                       "mozu_chybat")
     dt1$Client = as.numeric(dt1$Client)
+    dt2$Client = as.numeric(dt2$Client)
+    
     merged_table = merge(dt1,dt2, by = c("Client","Auction_ID"))
     
     
@@ -161,9 +153,11 @@ server <- function(input, output, session) {
                       "z",
                       "mozu_chybat")
     dt1$Client = as.numeric(dt1$Client)
+    dt2$Client = as.numeric(dt2$Client)
+    
     merged_table = merge(dt1,dt2, by = c("Client","Auction_ID"))
     
-   
+    
     nakup_table = merged_table[Type =="Purchase"]
     prodej_table = merged_table[Type =="Sale"]
     
@@ -311,7 +305,7 @@ server <- function(input, output, session) {
     }
     else if (input$datatype == "2") {
       paste("Accessibility attribute says who is able to reach the auction. There are only two options - private and public. Public Auctions are available for everyone. The value of the current high bid is displayed on the listing page. Buyers who want to win the auction make bids that are higher than the current high bid.
-In a private sale, the offers made to the seller are kept private - even after the sale is completed. No one but the buyer and seller will know what a property sold for.")
+            In a private sale, the offers made to the seller are kept private - even after the sale is completed. No one but the buyer and seller will know what a property sold for.")
     }
     else if (input$datatype == "3") {
       paste("This chart shows which currency is most used in transactions. Different currencies can be used in the system from which the data originates. The most used are euros and Czech crowns.")
@@ -324,10 +318,6 @@ In a private sale, the offers made to the seller are kept private - even after t
     }
     
     
-  })
+    })
   
-  
-  
-  
-  
-}
+  }

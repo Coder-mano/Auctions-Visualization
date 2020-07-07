@@ -36,7 +36,7 @@ bidProgress <- tabItem(tabName = "bids",
                              ),
                              column(
                                width = 12,
-                               plotOutput("bidAuctions")),
+                               plotlyOutput("bidAuctions")),
                              DT::dataTableOutput('bidDesc')
                          ))
 )
@@ -72,11 +72,13 @@ bidEvaluationObserver <- function(input,session) {
 }
 
 bidRenderAuctionPlot <- function(input,output,session){
+  cl = filter(offersInTime, Auction_ID == input$bidAuction)
+  cl = cl$Client[1]
   updateSelectInput(
     session, 'bidItem',
-    choices = c("All",filter(offersInTime, Auction_ID == input$bidAuction)$Item_ID)
+    choices = c("All",filter(offersInTime, Auction_ID == input$bidAuction & Client == cl)$Item_ID)
   )
-  return(renderPlot({
+  return(renderPlotly({
     
     # basic tmp filtering
     subData = filter(offersInTime, Auction_ID == input$bidAuction)
@@ -95,34 +97,39 @@ bidRenderAuctionPlot <- function(input,output,session){
       datatable(desc, rownames = F,options = list(scrollX = TRUE))
     })
     
-    
-    subData$Participant_ID <- as.character(subData$Participant_ID)
+    subData$Participant_ID = as.character(subData$Participant_ID)
     if (nrow(subData) != 0) { 
       if (input$group == "agregated") {
-        ggplot(data = subData, aes(x = subData$Change_order, y = subData$New_BID, colour = "red")) +
-          geom_line() + guides(color = FALSE, size = FALSE) +
-          xlab('Change_order') + ylab('New_BID') + theme_bw() +   geom_point() 
+        p <- plot_ly(
+          subData, x = ~Change_order, y = ~New_BID, type = 'scatter',
+          text = ~paste("Bid value: ", New_BID, '<br>Participant:', Participant_ID), mode = 'lines+markers')%>%
+          config(displayModeBar = FALSE)
         
       }else if(input$group == "participants"){
         col = ifelse(input$bidItem == "All","New_BID_Total","New_BID")
-        ggplot(data = subData, aes(x = subData$Change_order, y = subData[,c(col)], colour = subData$Participant_ID,group = subData$Participant_ID)) +
-          geom_line() +
-          xlab('Change_order') + ylab(c(col)) + theme_bw() +   geom_point()+ guides(fill=guide_legend(title="Participants"))
+        p <- plot_ly(
+          subData, x = ~Change_order, y = ~subData[,c(col)], type = 'scatter', color = ~Participant_ID,
+          text = ~paste("Bid value: ", subData[,c(col)], '<br>Participant:', Participant_ID), mode = 'lines+markers')%>%
+          layout(yaxis = list(title = col)) %>% config(displayModeBar = FALSE)
         
       }else{
         
         if (input$bidItem == "All") {
           subData2 <- filter(subData, Best_Bids != 0)
-          ggplot(data = subData2, aes(x = subData2$Change_order, y = subData2$Best_Bids, colour = "red")) +
-            geom_line() +
-            xlab('Change_order') + ylab('Best Bids') + theme_bw() + geom_point()
+          p <- plot_ly(
+            subData2, x = ~Change_order, y = ~Best_Bids, type = 'scatter', marker = list(color ="hsl(0, 100%, 50%)"), line = list(color ="hsl(0, 100%, 50%)"),
+            text = ~paste("Best bid: ", subData2[,c("Best_Bids")], '<br>Participant:', Participant_ID), mode = 'lines+markers')%>%
+            config(displayModeBar = FALSE)
         }else{
           subData2 <- filter(subData, subData$Best_Bids_Items != 0)
-          ggplot(data = subData2, aes(x = subData2$Change_order, y = subData2$Best_Bids_Items, colour = "red")) +
-            geom_line() +
-            xlab('Change_order') + ylab('Best Bids')+ theme_bw() + geom_point()
+          p <- plot_ly(
+            subData2, x = ~Change_order, y = ~Best_Bids_Items, type = 'scatter', marker = list(color ="hsl(0, 100%, 50%)"), line = list(color ="hsl(0, 100%, 50%)"),
+            text = ~paste("Best bid: ", subData2[,c("Best_Bids_Items")], '<br>Participant:', Participant_ID), mode = 'lines+markers')%>%
+            config(displayModeBar = FALSE)
+          
         }
       }
     }
+    p
   }))
 }

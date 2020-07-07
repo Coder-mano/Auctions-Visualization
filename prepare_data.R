@@ -1,8 +1,9 @@
+
 source("prep_functions.R")
 
-allData = read.csv('./data/HI_ALL.csv', stringsAsFactors = F, sep = ";",check.names = F)
-offersInTime = read.csv('./data/Offersintime.csv', stringsAsFactors = F, sep = ";",check.names = F)
-items=read.csv('./data/Items.csv', stringsAsFactors = F, sep = ";",check.names = F)
+#allData = read.csv('./data/HI_ALL.csv', stringsAsFactors = F, sep = ";",check.names = F)
+#offersInTime = read.csv('./data/Offersintime.csv', stringsAsFactors = F, sep = ";",check.names = F)
+#items=read.csv('./data/Items.csv', stringsAsFactors = F, sep = ";",check.names = F)
 map_data = NULL 
 
 prepareAllData <- function(allData) {
@@ -46,12 +47,13 @@ prepareAllData <- function(allData) {
   allData$ID_State[allData$ID_State == 0  ] <- "Other"
   
   #add longitude and latitude
+  
   return(allData)
 }
 
-prepareMapData <- function(map_data) {
- 
-  map_data = unique(allData[,c("ID_State")])
+prepareMapData <- function(allData) {
+  
+  map_data = unique( allData[,c("ID_State","lng","lat","max_BID_Value","min_BID_Value")])
   map_data$lng <- ifelse(map_data$ID_State == "Slovakia", 19.69902 ,
                          ifelse(map_data$ID_State == "France", 2.213749,
                                 ifelse(map_data$ID_State == "Czech Republic", 15.47296,
@@ -99,8 +101,10 @@ prepareMapData <- function(map_data) {
                                                                                     ifelse(map_data$ID_State == "Spain", 0, 
                                                                                            ifelse(map_data$ID_State == "Sweden",1425829,0.0))))))))))
   
+  return(map_data)
   #--------------------- end -> MAP
 }
+
 
 prepareOffersInTime <- function(offersInTime) {
   # Prepare data
@@ -132,21 +136,23 @@ prepareItems = function(items){
   names(items)[names(items) == '_cena_minula_string'] <- 'Past_Price'
   #library(dplyr)
   items=items[c(1:13)]
+  
+  items_prep=data.frame(table(items$Item_ID1))
+  items_prep=items_prep[items_prep$Freq > 1,]
+  items=items[items$Item_ID1 %in% items_prep$Var1[items_prep$Freq > 1],]
+  
   return(items)
 }
 
 
-#write.table(prepareOffersInTime(offersInTime),file = "./data/offersInTime.csv",row.names = F,col.names = T,sep = ",")
-#write.table(prepareItems(items),file = "./data/items.csv",row.names = F,col.names = T,sep = ",")
-#write.table(prepareAllData(allData),file='./data/allData.csv',row.names = F,col.names = T,sep = ",")
-
-allData = prepareAllData(allData)
-offersInTime = prepareOffersInTime(offersInTime)
-items = prepareItems(items)
+#allData = prepareAllData(allData)
+#offersInTime = prepareOffersInTime(offersInTime)
+#items = prepareItems(items)
 
 # create folder & save prepared data
-dir.create("data/prepared_data", showWarnings = FALSE)
+#dir.create("data/prepared_data", showWarnings = FALSE)
 
-write.csv2(allData, "./data/prepared_data/allData.csv", row.names = FALSE)
-write.csv2(offersInTime, "./data/prepared_data/offersInTime.csv", row.names = FALSE)
-write.csv2(items, "./data/prepared_data/items.csv", row.names = FALSE)
+#write.csv2(allData, "./data/prepared_data/allData.csv", row.names = FALSE)
+#write.csv2(offersInTime, "./data/prepared_data/offersInTime.csv", row.names = FALSE)
+#write.csv2(items, "./data/prepared_data/items.csv", row.names = FALSE)
+

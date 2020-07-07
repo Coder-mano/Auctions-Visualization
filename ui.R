@@ -1,5 +1,4 @@
 source("bidProgress.R")
-source("auctions.R")
 
 ui <- dashboardPage(
   dashboardHeader(title = "Assignment"),
@@ -7,7 +6,6 @@ ui <- dashboardPage(
     menuItem("Home", tabName = "home", icon = icon("home")),
     menuItem("Data", tabName = "data", icon = icon("database")),
     menuItem("Overview", tabName = "m_overview", icon = icon("line-chart")),
-    #menuItem("Auctions", tabName = "auction", icon = icon("line-chart")),
     menuItem("Bid progress", tabName = "bids", icon = icon("money")),
     menuItem("Items", tabName = "items", icon = icon("bong")),
     menuItem("Participants", tabName = "part", icon = icon("users")),
@@ -20,12 +18,12 @@ ui <- dashboardPage(
       tabItem(tabName = 'home', titlePanel("Dashboard"),
               leafletOutput("map",width = "100%", height = "400px"),
               fluidRow(
-               box(width = 3,title = "Overview", solidHeader = T, status = "primary",
-                   print("Number of auctions"),
-                   titlePanel(length(unique(offersInTime$Auction_ID))),
-                   print("Items in auctions"),
-                   titlePanel(length(unique(offersInTime$Item_ID)))
-               )
+                box(width = 3,title = "Overview", solidHeader = T, status = "primary",
+                    print("Number of auctions"),
+                    titlePanel(length(unique(offersInTime$Auction_ID))),
+                    print("Items in auctions"),
+                    titlePanel(length(unique(offersInTime$Item_ID)))
+                )
               ),
               fluidRow(
                 box(width = 3, status = "primary",
@@ -71,27 +69,20 @@ ui <- dashboardPage(
               fluidRow(
                 box(
                   width = 3,
-                  selectizeInput('item1', 'ItemID',
-                                 choices = items$Item_ID1)
-                )
-                #box(
-                #width = 3,
-                # selectizeInput('aukcia', 'ID aukcie',
-                #                   choices = unique(items$Auction_ID1))
-                # )
-                 ),
+                  selectizeInput('itemIn', 'ItemID',
+                                 choices = c(unique(items$Item_ID1)[0:20000])
+                  ))),
               
               fluidRow(
-                box(
+                column(
                   width = 12,
-                 # plotOutput("items_plot"),
-                  plotOutput("items_plot1"),
+                  plotOutput("items_plot"),
                   dataTableOutput("items_table")
                 )
               )
       ),
       
-       tabItem(tabName = "part",
+      tabItem(tabName = "part",
               fluidRow(
                 box(
                   width = 10,
@@ -126,11 +117,11 @@ ui <- dashboardPage(
               valueBoxOutput("money_talks", width = 4),#kolko dokopy minul
               tags$br(), 
               
-             # fluidRow(tags$div(HTML("<br><br><br><br><br><br><b>-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</b>")),
-             fluidRow(box(width = 2, selectInput("top_x", "Choose a number for Top X charts:", seq(3, 15, by=1)))),
-             fluidRow(box(width = 6,plotOutput("topten_money", width = "90%")),
-                      box(width = 6,plotOutput("topten_quantity", width = "90%"))
-                    )
+              # fluidRow(tags$div(HTML("<br><br><br><br><br><br><b>-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</b>")),
+              fluidRow(box(width = 2, selectInput("top_x", "Choose a number for Top X charts:", seq(3, 15, by=1)))),
+              fluidRow(box(width = 6,plotOutput("topten_money", width = "90%")),
+                       box(width = 6,plotOutput("topten_quantity", width = "90%"))
+              )
       ),
       
       tabItem(tabName = "authors",
@@ -152,8 +143,6 @@ ui <- dashboardPage(
               plotOutput("graph")
               
       )
-      
-      
       
       
     )
